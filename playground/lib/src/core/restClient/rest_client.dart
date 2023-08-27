@@ -6,8 +6,8 @@ import 'package:playground_app/src/core/restClient/interceptors/auth_interceptor
 final class RestClient extends DioForNative {
   RestClient()
       : super(BaseOptions(
-          // baseUrl: 'http://192.168.1.100:8080',
-          baseUrl: 'http://129.159.57.76:8080',
+          baseUrl: 'http://192.168.1.100:8080',
+          // baseUrl: 'http://129.159.57.76:8080',
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 60),
         )) {

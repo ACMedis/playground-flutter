@@ -33,6 +33,16 @@ class HomePage extends StatelessWidget {
                 ),
                 child: const Text('CIDADES'),
               ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/customer/add');
+                },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(56),
+                ),
+                child: const Text('Novo Cliente'),
+              ),
             ],
           ),
         ),
