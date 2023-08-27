@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:asp/asp.dart';
-
 import 'package:playground_app/src/core/ui/helpers/messages.dart';
-import 'package:playground_app/src/features/cities/city_atom.dart';
 import 'package:playground_app/src/features/cities/widgets/city_tile.dart';
 
 class CityPage extends StatefulWidget {
@@ -14,31 +11,18 @@ class CityPage extends StatefulWidget {
 }
 
 class _CityPageState extends State<CityPage> {
-  late final RxDisposer _errorListeners;
-
   @override
   void initState() {
     super.initState();
-    _errorListeners = rxObserver(
-      () => cityErrorMessage.value,
-      filter: () => cityErrorMessage.value.isNotEmpty,
-      effect: (value) => Messages.showError(cityErrorMessage.value, context),
-    );
   }
 
   @override
   void dispose() {
-    _errorListeners();
-    clearCitiesAction();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final (cities, isLoading) = context.select(
-      () => (citiesState.value, cityLoadingState.value),
-    );
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Lista produtos'),
@@ -49,9 +33,7 @@ class _CityPageState extends State<CityPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ElevatedButton(
-              onPressed: () {
-                fetchCitiesAction.call();
-              },
+              onPressed: () {},
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(56),
               ),
@@ -60,12 +42,14 @@ class _CityPageState extends State<CityPage> {
             const SizedBox(height: 20),
             Expanded(
               child: Visibility(
-                visible: isLoading,
+                visible: false,
                 replacement: ListView.builder(
-                  itemCount: cities.length,
+                  itemCount: 1,
                   itemBuilder: (_, index) {
-                    final city = cities[index];
-                    return CityTile(city: city);
+                    return null;
+
+                    // final city = cities[index];
+                    // return CityTile(city: city);
                   },
                 ),
                 child: const Center(
@@ -80,10 +64,10 @@ class _CityPageState extends State<CityPage> {
                 decoration: const BoxDecoration(
                   color: Colors.grey,
                 ),
-                child: Center(
+                child: const Center(
                     child: Text(
-                  'Total de cidades: ${cities.length}',
-                  style: const TextStyle(fontSize: 16),
+                  'Total de cidades: 0',
+                  style: TextStyle(fontSize: 16),
                 )),
               ),
             )

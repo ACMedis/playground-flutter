@@ -1,7 +1,7 @@
 import 'package:playground_app/src/core/exceptions/service_exception.dart';
 import 'package:playground_app/src/core/fp/either.dart';
-import 'package:playground_app/src/features/cities/repositories/city_repository.dart';
 import 'package:playground_app/src/models/city_model.dart';
+import 'package:playground_app/src/repositories/city/city_repository.dart';
 
 import './city_service.dart';
 

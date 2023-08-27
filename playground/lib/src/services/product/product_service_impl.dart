@@ -1,7 +1,7 @@
 import 'package:playground_app/src/core/exceptions/service_exception.dart';
 import 'package:playground_app/src/core/fp/either.dart';
-import 'package:playground_app/src/features/products/repositories/product_repository.dart';
 import 'package:playground_app/src/models/product_model.dart';
+import 'package:playground_app/src/repositories/product/product_repository.dart';
 
 import 'product_service.dart';
 
