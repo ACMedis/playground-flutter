@@ -1,5 +1,4 @@
 import 'package:asp/asp.dart';
-import 'package:asyncstate/class/async_loader_handler.dart';
 
 import 'package:playground_app/src/core/fp/either.dart';
 import 'package:playground_app/src/features/cities/city_atom.dart';
@@ -14,7 +13,7 @@ class CityReducer extends Reducer {
   }
 
   Future<void> _fetchCitiesAction() async {
-    final asyncLoaderHandler = AsyncLoaderHandler()..start();
+    cityLoadingState.value = true;
     citiesState.value.clear();
     cityErrorMessage.setValue('');
     final result = await service.fetchCities();
@@ -27,7 +26,7 @@ class CityReducer extends Reducer {
         cityErrorMessage.value = exception.message;
         break;
     }
-    asyncLoaderHandler.close();
+    cityLoadingState.value = false;
   }
 
   Future<void> _clearCitiesAction() async {

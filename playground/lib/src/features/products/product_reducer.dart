@@ -1,5 +1,4 @@
 import 'package:asp/asp.dart';
-import 'package:asyncstate/asyncstate.dart';
 
 import 'package:playground_app/src/core/fp/either.dart';
 import 'package:playground_app/src/features/products/product_atom.dart';
@@ -14,7 +13,7 @@ class ProductReducer extends Reducer {
   }
 
   Future<void> _fetchProductsAction() async {
-    final asyncLoaderHandler = AsyncLoaderHandler()..start();
+    loadingState.value = true;
     productsState.value.clear();
     errorState.setValue('');
     final result = await service.fetchProducts();
@@ -27,7 +26,7 @@ class ProductReducer extends Reducer {
         errorState.value = exception.message;
         break;
     }
-    asyncLoaderHandler.close();
+    loadingState.value = false;
   }
 
   void _clearProductsAction() {

@@ -4,7 +4,7 @@ import 'package:playground_app/src/models/product_model.dart';
 
 // ATOMS
 final productsState = Atom<List<ProductModel>>([]);
-final loadingState = Atom(true);
+final loadingState = Atom(false);
 final errorState = Atom<String>('');
 
 // ACTIONS

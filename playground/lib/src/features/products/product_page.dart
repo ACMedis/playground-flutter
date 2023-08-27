@@ -35,8 +35,8 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    final (products, errorMessage) = context.select(
-      () => (productsState.value, errorState.value),
+    final (products, isLoading) = context.select(
+      () => (productsState.value, loadingState.value),
     );
 
     return Scaffold(
@@ -48,7 +48,6 @@ class _ProductPageState extends State<ProductPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Error: $errorMessage'),
             ElevatedButton(
               onPressed: () {
                 fetchProductsAction.call();
@@ -60,12 +59,18 @@ class _ProductPageState extends State<ProductPage> {
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: ListView.builder(
-                itemCount: products.length,
-                itemBuilder: (_, index) {
-                  final product = products[index];
-                  return ProductTile(product: product);
-                },
+              child: Visibility(
+                visible: isLoading,
+                replacement: ListView.builder(
+                  itemCount: products.length,
+                  itemBuilder: (_, index) {
+                    final product = products[index];
+                    return ProductTile(product: product);
+                  },
+                ),
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
               ),
             ),
             SizedBox(

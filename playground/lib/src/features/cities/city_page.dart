@@ -35,8 +35,8 @@ class _CityPageState extends State<CityPage> {
 
   @override
   Widget build(BuildContext context) {
-    final (cities, errorMessage) = context.select(
-      () => (citiesState.value, cityErrorMessage.value),
+    final (cities, isLoading) = context.select(
+      () => (citiesState.value, cityLoadingState.value),
     );
 
     return Scaffold(
@@ -48,7 +48,6 @@ class _CityPageState extends State<CityPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Error: $errorMessage'),
             ElevatedButton(
               onPressed: () {
                 fetchCitiesAction.call();
@@ -60,12 +59,18 @@ class _CityPageState extends State<CityPage> {
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: ListView.builder(
-                itemCount: cities.length,
-                itemBuilder: (_, index) {
-                  final city = cities[index];
-                  return CityTile(city: city);
-                },
+              child: Visibility(
+                visible: isLoading,
+                replacement: ListView.builder(
+                  itemCount: cities.length,
+                  itemBuilder: (_, index) {
+                    final city = cities[index];
+                    return CityTile(city: city);
+                  },
+                ),
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
               ),
             ),
             SizedBox(
