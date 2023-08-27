@@ -4,6 +4,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
 import 'package:playground_app/src/core/ui/helpers/messages.dart';
+import 'package:playground_app/src/core/ui/widgets/playground_button.dart';
+import 'package:playground_app/src/core/ui/widgets/playground_empty.dart';
 import 'package:playground_app/src/features/products/product_state.dart';
 import 'package:playground_app/src/features/products/product_store.dart';
 import 'package:playground_app/src/features/products/widgets/product_tile.dart';
@@ -44,7 +46,6 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     final store = Modular.get<ProductStore>();
-    print(store.hashCode);
 
     return Scaffold(
       appBar: AppBar(
@@ -53,50 +54,53 @@ class _ProductPageState extends State<ProductPage> {
       body: Observer(
         builder: (_) {
           final state = store.state;
+          final productsLength = state.products.length;
           return Container(
             padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ElevatedButton(
+                PlaygroundButton(
                   onPressed: () {
                     store.fetchProducts();
                   },
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(56),
-                  ),
-                  child: const Text('Pesquisar'),
+                  label: 'Pesquisar',
+                  isLoading: (state is ProductLoadingState),
                 ),
                 const SizedBox(height: 20),
                 Expanded(
                   child: Visibility(
-                    visible: (state is ProductLoadingState),
+                    visible: (productsLength == 0),
                     replacement: ListView.builder(
-                      itemCount: state.products.length,
+                      itemCount: productsLength,
                       itemBuilder: (_, index) {
                         final product = state.products[index];
                         return ProductTile(product: product);
                       },
                     ),
-                    child: const Center(
-                      child: CircularProgressIndicator(),
+                    child: const PlaygroundEmpty(
+                      imagePath: 'assets/images/empty.png',
+                      message: 'Nenhum produto encontrado!',
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: const BoxDecoration(
-                      color: Colors.grey,
+                Offstage(
+                  offstage: (productsLength == 0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: const BoxDecoration(
+                        color: Colors.grey,
+                      ),
+                      child: Center(
+                          child: Text(
+                        'Total produtos: ${state.products.length}',
+                        style: const TextStyle(fontSize: 16),
+                      )),
                     ),
-                    child: Center(
-                        child: Text(
-                      'Total produtos: ${state.products.length}',
-                      style: const TextStyle(fontSize: 16),
-                    )),
                   ),
-                )
+                ),
               ],
             ),
           );

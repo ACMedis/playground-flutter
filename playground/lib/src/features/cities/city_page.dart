@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:mobx/mobx.dart';
 import 'package:playground_app/src/core/ui/helpers/messages.dart';
+import 'package:playground_app/src/core/ui/widgets/playground_button.dart';
+import 'package:playground_app/src/core/ui/widgets/playground_empty.dart';
+import 'package:playground_app/src/features/cities/city_state.dart';
+import 'package:playground_app/src/features/cities/city_store.dart';
 import 'package:playground_app/src/features/cities/widgets/city_tile.dart';
 
 class CityPage extends StatefulWidget {
@@ -11,69 +18,88 @@ class CityPage extends StatefulWidget {
 }
 
 class _CityPageState extends State<CityPage> {
+  late ReactionDisposer _reactDisposer;
+
   @override
   void initState() {
     super.initState();
+    final store = Modular.get<CityStore>();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _reactDisposer = reaction((_) => store.state, (state) {
+        if (state is CityErrorState) {
+          Messages.showError(state.errorMessage!, context);
+        }
+      });
+    });
   }
 
   @override
   void dispose() {
+    _reactDisposer();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final store = Modular.get<CityStore>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Lista produtos'),
       ),
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(56),
-              ),
-              child: const Text('Pesquisar'),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: Visibility(
-                visible: false,
-                replacement: ListView.builder(
-                  itemCount: 1,
-                  itemBuilder: (_, index) {
-                    return null;
+      body: Observer(builder: (_) {
+        final state = store.state;
+        final citiesLength = state.cities.length;
 
-                    // final city = cities[index];
-                    // return CityTile(city: city);
+        return Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                PlaygroundButton(
+                  label: 'Pesquisar',
+                  onPressed: () {
+                    store.fetchCities();
                   },
+                  isLoading: (state is CityLoadingState),
                 ),
-                child: const Center(
-                  child: CircularProgressIndicator(),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: Visibility(
+                    visible: (citiesLength == 0),
+                    replacement: ListView.builder(
+                      itemCount: citiesLength,
+                      itemBuilder: (_, index) {
+                        final city = state.cities[index];
+                        return CityTile(city: city);
+                      },
+                    ),
+                    child: const PlaygroundEmpty(
+                        imagePath: 'assets/images/empty.png',
+                        message: 'Nenhuma cidade encontrada!'),
+                  ),
                 ),
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(
-                  color: Colors.grey,
-                ),
-                child: const Center(
-                    child: Text(
-                  'Total de cidades: 0',
-                  style: TextStyle(fontSize: 16),
-                )),
-              ),
-            )
-          ],
-        ),
-      ),
+                Offstage(
+                  offstage: (citiesLength == 0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: const BoxDecoration(
+                        color: Colors.grey,
+                      ),
+                      child: Center(
+                          child: Text(
+                        'Total de cidades: $citiesLength',
+                        style: const TextStyle(fontSize: 16),
+                      )),
+                    ),
+                  ),
+                )
+              ],
+            ));
+      }),
     );
   }
 }
