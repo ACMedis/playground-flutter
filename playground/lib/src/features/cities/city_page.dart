@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
+
 import 'package:playground_app/src/core/ui/helpers/messages.dart';
 import 'package:playground_app/src/core/ui/widgets/playground_button.dart';
 import 'package:playground_app/src/core/ui/widgets/playground_empty.dart';
@@ -61,6 +62,14 @@ class _CityPageState extends State<CityPage> {
                   label: 'Pesquisar',
                   onPressed: () {
                     store.fetchCities();
+                  },
+                  isLoading: (state is CityLoadingState),
+                ),
+                const SizedBox(height: 20),
+                PlaygroundButton(
+                  label: 'Cadastrar',
+                  onPressed: () {
+                    store.create();
                   },
                   isLoading: (state is CityLoadingState),
                 ),

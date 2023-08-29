@@ -14,7 +14,7 @@ sealed class ColorsConstants {
 }
 
 sealed class FontConstants {
-  static const fontFamily = 'Poppins';
+  static const fontFamily = 'Montserrat';
 }
 
 sealed class ImageConstants {

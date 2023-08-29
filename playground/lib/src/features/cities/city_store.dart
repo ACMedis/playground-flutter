@@ -1,4 +1,5 @@
 import 'package:mobx/mobx.dart';
+
 import 'package:playground_app/src/core/fp/either.dart';
 import 'package:playground_app/src/features/cities/city_state.dart';
 import 'package:playground_app/src/services/city/city_service.dart';
@@ -26,5 +27,9 @@ abstract class _CityStoreBase with Store {
       case Failure(:final exception):
         state = state.setError(exception.message);
     }
+  }
+
+  Future<void> create() async {
+    service.create();
   }
 }

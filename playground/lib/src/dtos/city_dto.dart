@@ -1,12 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-class CityModel {
+class CityDTO {
   final int id;
   final int codeErp;
   final String name;
   final String uf;
   final bool active;
 
-  CityModel({
+  CityDTO({
     required this.id,
     required this.codeErp,
     required this.name,
@@ -14,7 +14,7 @@ class CityModel {
     required this.active,
   });
 
-  factory CityModel.fromMap(dynamic json) {
+  factory CityDTO.fromMap(dynamic json) {
     return switch (json) {
       {
         'id': int id,
@@ -23,7 +23,7 @@ class CityModel {
         'estado': String uf,
         'ativo': bool active,
       } =>
-        CityModel(
+        CityDTO(
           id: id,
           codeErp: codeErp,
           name: name,
@@ -32,16 +32,6 @@ class CityModel {
         ),
       _ => throw ArgumentError('Invalid JSON'),
     };
-  }
-
-  factory CityModel.fromMapEntity(dynamic map) {
-    return CityModel(
-      id: map['id'] as int,
-      codeErp: map['codeErp'] as int,
-      name: map['name'] as String,
-      uf: map['uf'] as String,
-      active: ((map['active'] as int) == 1) ? true : false,
-    );
   }
 
   Map<String, dynamic> toMap() {

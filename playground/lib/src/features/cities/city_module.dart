@@ -1,4 +1,5 @@
 import 'package:flutter_modular/flutter_modular.dart';
+
 import 'package:playground_app/src/features/cities/city_page.dart';
 import 'package:playground_app/src/features/cities/city_store.dart';
 import 'package:playground_app/src/repositories/city/city_repository.dart';
@@ -10,7 +11,7 @@ class CityModule extends Module {
   @override
   List<Bind> get binds => [
         Bind.factory<CityRepository>((i) => CityRepositoryImpl(i())),
-        Bind.factory<CityService>((i) => CityServiceImpl(i())),
+        Bind.factory<CityService>((i) => CityServiceImpl(i(), i())),
         Bind.singleton<CityStore>((i) => CityStore(i())),
       ];
 
