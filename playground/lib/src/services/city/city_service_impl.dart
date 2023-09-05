@@ -42,9 +42,9 @@ class CityServiceImpl implements CityService {
     final database = await db.database;
     try {
       final city = CityModel(
-        id: 1,
-        codeErp: 5941,
-        name: 'CASCAVEL',
+        id: 2,
+        codeErp: 5942,
+        name: 'TOLEDO',
         uf: 'PR',
         active: true,
       );
