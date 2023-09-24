@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
+
 import 'package:playground_app/src/core/ui/helpers/messages.dart';
 import 'package:playground_app/src/core/ui/widgets/playground_button.dart';
 import 'package:playground_app/src/core/ui/widgets/playground_empty.dart';
-import 'package:playground_app/src/features/products/product_state.dart';
 import 'package:playground_app/src/features/products/product_store.dart';
 import 'package:playground_app/src/features/products/widgets/product_tile.dart';
 
@@ -29,8 +29,8 @@ class _ProductPageState extends State<ProductPage> {
       _reactionDisposer = reaction(
         (_) => store.state,
         (state) {
-          if (state is ProductErrorState) {
-            Messages.showError(state.errorMessage!, context);
+          if (state.errorMessage.isNotEmpty) {
+            Messages.showError(state.errorMessage, context);
           }
         },
       );
@@ -65,7 +65,7 @@ class _ProductPageState extends State<ProductPage> {
                     store.fetchProducts();
                   },
                   label: 'Pesquisar',
-                  isLoading: (state is ProductLoadingState),
+                  isLoading: (state.isLoading),
                 ),
                 const SizedBox(height: 20),
                 Expanded(

@@ -1,4 +1,5 @@
 import 'package:mobx/mobx.dart';
+
 import 'package:playground_app/src/core/fp/either.dart';
 import 'package:playground_app/src/features/products/product_state.dart';
 import 'package:playground_app/src/services/product/product_service.dart';
@@ -16,14 +17,17 @@ abstract class _ProductStoreBase with Store {
 
   @action
   Future<void> fetchProducts() async {
-    state = state.setLoading();
+    state = state.copyWith(isLoading: true);
     final result = await _service.fetchProducts();
 
     switch (result) {
       case Success(:final value):
-        state = state.setLoaded(value);
+        state = state.copyWith(products: value, isLoading: false);
       case Failure(:final exception):
-        state = state.setError(exception.message);
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: exception.message,
+        );
     }
   }
 }

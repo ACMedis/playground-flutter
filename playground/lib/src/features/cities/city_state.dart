@@ -1,61 +1,26 @@
 import 'package:playground_app/src/models/city_model.dart';
 
-sealed class CityState {
+class CityState {
   final List<CityModel> cities;
   final bool isLoading;
-  final String? errorMessage;
+  final String errorMessage;
 
-  CityState({
-    required this.cities,
-    this.isLoading = false,
-    this.errorMessage,
-  });
+  CityState(
+      {required this.cities,
+      required this.isLoading,
+      required this.errorMessage});
 
-  factory CityState.initial() => CityInitialState();
+  factory CityState.initial() => CityState(
+        cities: [],
+        errorMessage: '',
+        isLoading: false,
+      );
 
-  CityState setLoading() {
-    return CityLoadingState();
+  CityState copyWith(
+      {List<CityModel>? cities, bool? isLoading, String? errorMessage}) {
+    return CityState(
+        cities: cities ?? this.cities,
+        isLoading: isLoading ?? this.isLoading,
+        errorMessage: errorMessage ?? this.errorMessage);
   }
-
-  CityState setLoaded(List<CityModel> value) {
-    return CityLoadedState(cities: value);
-  }
-
-  CityState setError(String message) {
-    return CityErrorState(errorMessage: message);
-  }
-}
-
-class CityInitialState extends CityState {
-  CityInitialState()
-      : super(
-          cities: [],
-          isLoading: false,
-          errorMessage: '',
-        );
-}
-
-class CityLoadingState extends CityState {
-  CityLoadingState()
-      : super(
-          cities: [],
-          isLoading: true,
-          errorMessage: '',
-        );
-}
-
-class CityLoadedState extends CityState {
-  CityLoadedState({required super.cities})
-      : super(
-          isLoading: false,
-          errorMessage: '',
-        );
-}
-
-class CityErrorState extends CityState {
-  CityErrorState({required super.errorMessage})
-      : super(
-          cities: [],
-          isLoading: false,
-        );
 }

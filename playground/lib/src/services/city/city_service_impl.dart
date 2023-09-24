@@ -40,19 +40,39 @@ class CityServiceImpl implements CityService {
   @override
   Future<Either<ServiceException, Nil>> create() async {
     final database = await db.database;
-    try {
-      final city = CityModel(
-        id: 2,
-        codeErp: 5942,
-        name: 'TOLEDO',
-        uf: 'PR',
-        active: true,
-      );
-      await database.insert('city', city.toMap());
-      return Success(nil);
-    } catch (e) {
-      log('Error ao Salvar cidade');
-      return Failure(ServiceException(message: 'Erro ao salvar cidade'));
+    final result = await repository.fetchCities();
+    switch (result) {
+      case Success(:final value):
+        final ids = value.map((e) => e.id).toList().join(',');
+
+        database.delete('city', where: ' id in ($ids)');
+
+        for (var i = 0; i < value.length; i++) {
+          await database.insert('city', value[i].toMap());
+        }
+        return Success(nil);
+      case Failure(:final exception):
+        return Failure(
+          ServiceException(
+            message: 'Erro ao sincronizar cidades - ${exception.message}',
+          ),
+        );
     }
+
+    // final database = await db.database;
+    // try {
+    //   final city = CityModel(
+    //     id: 2,
+    //     codeErp: 5942,
+    //     name: 'TOLEDO',
+    //     uf: 'PR',
+    //     active: true,
+    //   );
+    //   await database.insert('city', city.toMap());
+    //   return Success(nil);
+    // } catch (e) {
+    //   log('Error ao Salvar cidade');
+    //   return Failure(ServiceException(message: 'Erro ao salvar cidade'));
+    // }
   }
 }

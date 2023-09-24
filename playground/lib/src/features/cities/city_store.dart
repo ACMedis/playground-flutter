@@ -18,18 +18,40 @@ abstract class _CityStoreBase with Store {
 
   @action
   Future<void> fetchCities() async {
-    state = state.setLoading();
+    state = state.copyWith(isLoading: true);
     final result = await service.fetchCities();
 
     switch (result) {
       case Success(:final value):
-        state = state.setLoaded(value);
+        state = state.copyWith(
+          cities: value,
+          isLoading: false,
+        );
       case Failure(:final exception):
-        state = state.setError(exception.message);
+        state = state.copyWith(
+          cities: [],
+          isLoading: false,
+          errorMessage: exception.message,
+        );
     }
   }
 
   Future<void> create() async {
-    service.create();
+    state = state.copyWith(isLoading: true);
+    final result = await service.create();
+    switch (result) {
+      case Success():
+        state = state.copyWith(
+          cities: [],
+          isLoading: false,
+          errorMessage: '',
+        );
+      case Failure(:final exception):
+        state = state.copyWith(
+          cities: [],
+          isLoading: false,
+          errorMessage: exception.message,
+        );
+    }
   }
 }

@@ -7,7 +7,6 @@ import 'package:mobx/mobx.dart';
 import 'package:playground_app/src/core/ui/helpers/messages.dart';
 import 'package:playground_app/src/core/ui/widgets/playground_button.dart';
 import 'package:playground_app/src/core/ui/widgets/playground_empty.dart';
-import 'package:playground_app/src/features/cities/city_state.dart';
 import 'package:playground_app/src/features/cities/city_store.dart';
 import 'package:playground_app/src/features/cities/widgets/city_tile.dart';
 
@@ -28,8 +27,8 @@ class _CityPageState extends State<CityPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _reactDisposer = reaction((_) => store.state, (state) {
-        if (state is CityErrorState) {
-          Messages.showError(state.errorMessage!, context);
+        if (state.errorMessage.isNotEmpty) {
+          Messages.showError(state.errorMessage, context);
         }
       });
     });
@@ -63,7 +62,7 @@ class _CityPageState extends State<CityPage> {
                   onPressed: () {
                     store.fetchCities();
                   },
-                  isLoading: (state is CityLoadingState),
+                  isLoading: (state.isLoading),
                 ),
                 const SizedBox(height: 20),
                 PlaygroundButton(
@@ -71,7 +70,7 @@ class _CityPageState extends State<CityPage> {
                   onPressed: () {
                     store.create();
                   },
-                  isLoading: (state is CityLoadingState),
+                  isLoading: (state.isLoading),
                 ),
                 const SizedBox(height: 20),
                 Expanded(
